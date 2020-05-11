@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.LocationActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/locationGifLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/gif_1" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:cardBackgroundColor="@color/cardview_light_background"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/location_title"
+                    android:textColor="@android:color/black"
+                    android:textSize="24sp" />
+
+                <com.developer.mtextfield.TextFieldBoxes
+                    android:id="@+id/cityNameBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="10dp"
+                    app:hasClearButton="true"
+                    app:iconSignifier="@drawable/ic_place_black_24dp"
+                    app:isResponsiveIconColor="true"
+                    app:labelText="@string/location_prompt"
+                    app:panelBackgroundColor="@color/location_background"
+                    app:primaryColor="@android:color/black"
+                    app:secondaryColor="@android:color/black"
+                    app:textCounterColor="@android:color/black"
+                    app:textHelperColor="@android:color/black">
+
+                    <com.developer.mtextfield.ExtendedEditText
+                        android:id="@+id/CityNameText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/black"
+                        android:textColorHighlight="?android:attr/colorBackgroundCacheHint"
+                        android:textColorHint="@android:color/black"
+                        android:textColorLink="@android:color/black" />
+
+                </com.developer.mtextfield.TextFieldBoxes>
+
+                <Button
+                    android:id="@+id/locationConfirmButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="20dp"
+                    android:onClick="onConfirmButtonClick"
+                    android:text="@string/location_confirm" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
