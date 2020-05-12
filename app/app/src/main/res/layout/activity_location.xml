@@ -7,14 +7,9 @@
     tools:context=".activity.LocationActivity">
 
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <pl.droidsonroids.gif.GifImageView
-            android:id="@+id/locationGifLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/gif_1" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="325dp"
