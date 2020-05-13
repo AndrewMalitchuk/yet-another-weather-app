@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Yet Another Weather App</string>
-    <string name="location_title">Hello!\nWhere are you from?</string>
+    <string name="location_title">Where are you from?</string>
     <string name="location_prompt">I\'m from...</string>
     <string name="location_confirm">Let\'s start</string>
     <string name="success">Success!</string>
-    <string name="graph">🌡️ Graph</string>
+    <string name="graph">🌡️ Graph (°С)</string>
     <string name="date">🗓️ Choose date</string>
     <string name="detail">📋 Details</string>
     <string name="change_city">Change city</string>

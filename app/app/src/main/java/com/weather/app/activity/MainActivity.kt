@@ -7,13 +7,11 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dynamitechetan.flowinggradient.FlowingGradientClass
-import com.michalsvec.singlerowcalendar.calendar.CalendarChangesObserver
-import com.michalsvec.singlerowcalendar.calendar.CalendarViewManager
-import com.michalsvec.singlerowcalendar.calendar.SingleRowCalendarAdapter
-import com.michalsvec.singlerowcalendar.selection.CalendarSelectionManager
 import com.weather.app.R
+import com.weather.app.entity.detail.WeatherList
 import com.weather.app.entity.summary.WeatherSummary
 import com.weather.app.network.APIClient
 import com.weather.app.network.APIInterface
@@ -21,6 +19,8 @@ import im.dacer.androidcharts.LineView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -29,13 +29,10 @@ class MainActivity : AppCompatActivity() {
 
     val TAG = "MainActivity"
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // Set Toolbar
-        toolbar.setTitle("sdfsdf")
         setSupportActionBar(toolbar)
         // Set background
         FlowingGradientClass()
@@ -43,53 +40,72 @@ class MainActivity : AppCompatActivity() {
             .onLinearLayout(mainLayout)
             .setTransitionDuration(4000)
             .start()
-        // Get summary weather info
+
+        //
+        setContent()
+        //
+        refresh.setOnRefreshListener {
+            setContent()
+        }
+
+    }
+
+    private fun setContent() {
+        refresh.isRefreshing = true
         var res = APIClient.client?.create(APIInterface::class.java)
         res?.getSummary("Ivano-Frankivsk", APIClient.appid, "metric")
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribeOn(Schedulers.io())
             ?.doOnComplete {
                 chartWeatherCard.visibility = View.VISIBLE
+
             }
             ?.subscribe {
                 Log.d(TAG, it.toString())
-                setContent(it)
+                setSummaryContent(it)
             }
 
-
-
+        res?.getDetail("Ivano-Frankivsk", APIClient.appid, "metric")
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribeOn(Schedulers.io())
+            ?.doOnComplete {
+                chartWeatherCard.visibility = View.VISIBLE
+                refresh.isRefreshing = false
+            }
+            ?.subscribe {
+                Log.d(TAG, it.toString())
+                setDetailContent(it.list)
+            }
     }
 
-    private fun setContent(content: WeatherSummary) {
+    private fun setSummaryContent(content: WeatherSummary) {
         toolbar.title = content.name
-//        weatherDate.text= SimpleDateFormat("dd.MM.yyyy").format(Date(content.dt.toLong() * 1000))
         weatherStatus.text = content.weather[0].main
         weatherDescription.text = "(" + content.weather[0].description + ")"
         weatherTemp.setText("\uD83C\uDF21️ " + content.main.temp + " °С")
         weatherWind.setText("\uD83D\uDCA8 " + content.wind.speed + " m/s")
 
-        setChart()
+        tempMax.text="⬆️ "+content.main.temp_max+" °С"
+        tempMin.text="⬇️ "+content.main.temp_min+" °С"
+
     }
 
-    private fun setChart() {
+    private fun setDetailContent(content: List<WeatherList>) {
 
-        val test = ArrayList<String>()
-        for (i in 0 until 9) {
-            test.add((i + 1).toString())
+        val axisX = ArrayList<String>()
+        val axisY = ArrayList<Float>()
+
+        for (weatherItem in content) {
+//            axisX.add(SimpleDateFormat("HH:mm (E)").format(Date(weatherItem.dt.toLong() * 1000)))
+            axisX.add(SimpleDateFormat("HH:mm (dd.MM)").format(Date(weatherItem.dt.toLong() * 1000)))
+            axisY.add(weatherItem.main.temp.toFloat())
         }
 
-        val dataList: ArrayList<Int> = ArrayList()
-        var random = (Math.random() * 9 + 1).toFloat()
-        for (i in 0 until 9) {
-            dataList.add((Math.random() * random).toInt())
-        }
+        val dataLists: ArrayList<ArrayList<Float>> = ArrayList()
+        dataLists.add(axisY)
 
 
-        val dataLists: ArrayList<ArrayList<Int>> = ArrayList()
-        dataLists.add(dataList)
-
-
-        lineView.setBottomTextList(test)
+        lineView.setBottomTextList(axisX)
         lineView.setColorArray(
             intArrayOf(
                 Color.RED
@@ -98,15 +114,16 @@ class MainActivity : AppCompatActivity() {
         lineView.setDrawDotLine(true)
         lineView.setShowPopup(LineView.SHOW_POPUPS_MAXMIN_ONLY)
 
-        lineView.setDataList(dataLists)
+//        lineView.setDataList(dataLists)
+        lineView.setFloatDataList(dataLists)
 
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        when(item.itemId){
-            R.id.action_change_city->{
-                startActivity(Intent(applicationContext,LocationActivity::class.java))
+        when (item.itemId) {
+            R.id.action_change_city -> {
+                startActivity(Intent(applicationContext, LocationActivity::class.java))
             }
         }
 
@@ -114,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu,menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

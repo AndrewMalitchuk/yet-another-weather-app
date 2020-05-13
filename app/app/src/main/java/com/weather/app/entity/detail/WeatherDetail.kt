@@ -1,4 +1,4 @@
-package com.weather.app.entity.summary
+package com.weather.app.entity.detail
 
 import com.google.gson.annotations.SerializedName
 
@@ -14,8 +14,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 For support, please feel free to contact me at https://www.linkedin.com/in/syedabsar */
 
 
-data class Wind (
+data class WeatherDetail(
 
-	@SerializedName("speed") val speed : Double,
-	@SerializedName("deg") val deg : Int
+    @SerializedName("cod") val cod: Int,
+    @SerializedName("message") val message: Int,
+    @SerializedName("cnt") val cnt: Int,
+    @SerializedName("list") val list: List<WeatherList>,
+    @SerializedName("city") val city: City
 )

@@ -1,10 +1,29 @@
 package com.weather.app.activity
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.drawable.Icon
+import android.location.Location
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.os.Looper
+import android.provider.Settings
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
 import android.view.View
+import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.widget.doOnTextChanged
 import com.dynamitechetan.flowinggradient.FlowingGradientClass
+import com.google.android.gms.location.*
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.weather.app.R
 import io.reactivex.Observable
@@ -16,7 +35,17 @@ import java.util.concurrent.TimeUnit
 
 class LocationActivity : AppCompatActivity() {
 
+    private val TAG = "LocationActivity"
+
     private val delay: Long = 2
+
+    private val PERMISSION_ID = 42
+
+    private lateinit var locationManager: LocationManager
+
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
+
+    private var isForGps = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +56,56 @@ class LocationActivity : AppCompatActivity() {
             .onRelativeLayout(relativeLayout)
             .setTransitionDuration(4000)
             .start()
+        //
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        getLastLocation()
+
+        // Change FAB icon - if text inputted - just confirm, else - use GPS
+        locationText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (s.toString().trim() == "") {
+
+                        floatingActionButton.setImageIcon(
+                            Icon.createWithResource(
+                                applicationContext,
+                                R.drawable.ic_place_black_24dp
+                            )
+                        )
+                        isForGps=true
+                    }else{
+                        floatingActionButton.setImageIcon(
+                            Icon.createWithResource(
+                                applicationContext,
+                                R.drawable.ic_check_black_24dp
+                            )
+                        )
+                        isForGps=false
+                    }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+        })
+
+        floatingActionButton.setOnClickListener{
+
+            if(isForGps){
+                Toast.makeText(applicationContext,"GPS",Toast.LENGTH_LONG).show()
+            }else{
+                Toast.makeText(applicationContext,"Custom",Toast.LENGTH_LONG).show()
+            }
+        }
+
+
     }
 
     fun onConfirmButtonClick(view: View) {
@@ -40,6 +119,109 @@ class LocationActivity : AppCompatActivity() {
             .subscribe {
                 startActivity(Intent(this, MainActivity::class.java))
             }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLastLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+
+                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+                    var location: Location? = task.result
+                    if (location == null) {
+                        requestNewLocationData()
+                    } else {
+//                        findViewById<TextView>(R.id.latTextView).text = location.latitude.toString()
+//                        findViewById<TextView>(R.id.lonTextView).text = location.longitude.toString()
+                        Log.d(
+                            TAG,
+                            location.latitude.toString() + " " + location.longitude.toString()
+                        )
+
+                    }
+                }
+            } else {
+                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        } else {
+            requestPermissions()
+        }
+    }
+
+
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
+    }
+
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            PERMISSION_ID
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSION_ID) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                // Granted. Start getting the location information
+            }
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        var locationManager: LocationManager =
+            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            var mLastLocation: Location = locationResult.lastLocation
+
+            Log.d(TAG, mLastLocation.latitude.toString() + " " + mLastLocation.longitude.toString())
+//            findViewById<TextView>(R.id.latTextView).text = mLastLocation.latitude.toString()
+//            findViewById<TextView>(R.id.lonTextView).text = mLastLocation.longitude.toString()
+        }
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun requestNewLocationData() {
+        var mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = 0
+        mLocationRequest.fastestInterval = 0
+        mLocationRequest.numUpdates = 1
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        mFusedLocationClient!!.requestLocationUpdates(
+            mLocationRequest, mLocationCallback,
+            Looper.myLooper()
+        )
     }
 
 }

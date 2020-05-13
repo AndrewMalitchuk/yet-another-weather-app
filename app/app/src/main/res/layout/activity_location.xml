@@ -15,67 +15,169 @@
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            app:cardBackgroundColor="@color/cardview_light_background"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            app:cardBackgroundColor="@color/cardview_dark_background"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <TextView
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="@string/location_title"
-                    android:textColor="@android:color/black"
-                    android:textSize="24sp" />
-
-                <com.developer.mtextfield.TextFieldBoxes
-                    android:id="@+id/cityNameBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="175dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginBottom="10dp"
-                    app:hasClearButton="true"
-                    app:iconSignifier="@drawable/ic_place_black_24dp"
-                    app:isResponsiveIconColor="true"
-                    app:labelText="@string/location_prompt"
-                    app:panelBackgroundColor="@color/location_background"
-                    app:primaryColor="@android:color/black"
-                    app:secondaryColor="@android:color/black"
-                    app:textCounterColor="@android:color/black"
-                    app:textHelperColor="@android:color/black">
+                    android:clickable="true"
+                    android:src="@drawable/ic_place_black_24dp" />
 
-                    <com.developer.mtextfield.ExtendedEditText
-                        android:id="@+id/CityNameText"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp"
+                        android:layout_margin="10dp"
+                        app:cardBackgroundColor="@color/location_background"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="5dp">
+
+
+                        <ImageView
+                            android:id="@+id/imageView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:scaleType="centerCrop"
+                            app:srcCompat="@drawable/map" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@android:color/black"
-                        android:textColorHighlight="?android:attr/colorBackgroundCacheHint"
-                        android:textColorHint="@android:color/black"
-                        android:textColorLink="@android:color/black" />
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:text="@string/location_title" />
 
-                </com.developer.mtextfield.TextFieldBoxes>
+                    <EditText
+                        android:id="@+id/locationText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:ems="10"
+                        android:hint="@string/location_prompt"
+                        android:inputType="textPersonName" />
 
-                <Button
-                    android:id="@+id/locationConfirmButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="20dp"
-                    android:onClick="onConfirmButtonClick"
-                    android:text="@string/location_confirm" />
+                    <!--                    <com.developer.mtextfield.TextFieldBoxes-->
+                    <!--                        android:id="@+id/cityNameBox"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginLeft="15dp"-->
+                    <!--                        android:layout_marginTop="15dp"-->
+                    <!--                        android:layout_marginRight="20dp"-->
+                    <!--                        android:layout_marginBottom="10dp"-->
+                    <!--                        app:hasClearButton="true"-->
+                    <!--                        app:isResponsiveIconColor="true"-->
+                    <!--                        app:labelText="@string/location_prompt"-->
+                    <!--                        app:panelBackgroundColor="@color/location_background"-->
+                    <!--                        app:primaryColor="@android:color/black"-->
+                    <!--                        app:secondaryColor="@android:color/black"-->
+                    <!--                        app:textCounterColor="@android:color/black"-->
+                    <!--                        app:textHelperColor="@android:color/black">-->
 
-            </LinearLayout>
+                    <!--                        <com.developer.mtextfield.ExtendedEditText-->
+                    <!--                            android:id="@+id/CityNameText"-->
+                    <!--                            android:layout_width="wrap_content"-->
+                    <!--                            android:layout_height="wrap_content"-->
+                    <!--                            android:textColor="@android:color/black"-->
+                    <!--                            android:textColorHighlight="?android:attr/colorBackgroundCacheHint"-->
+                    <!--                            android:textColorHint="@android:color/black"-->
+                    <!--                            android:textColorLink="@android:color/black" />-->
+
+                    <!--                    </com.developer.mtextfield.TextFieldBoxes>-->
+
+
+                </LinearLayout>
+            </RelativeLayout>
+
         </androidx.cardview.widget.CardView>
+
+
+<!--        <androidx.cardview.widget.CardView-->
+<!--            android:layout_width="325dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_centerInParent="true"-->
+<!--            app:cardBackgroundColor="@color/cardview_light_background"-->
+<!--            app:cardCornerRadius="5dp"-->
+<!--            app:cardElevation="5dp">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:layout_marginTop="20dp"-->
+<!--                    android:layout_marginRight="15dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:text="@string/location_title"-->
+<!--                    android:textColor="@android:color/black"-->
+<!--                    android:textSize="24sp" />-->
+
+<!--                <com.developer.mtextfield.TextFieldBoxes-->
+<!--                    android:id="@+id/cityNameBox"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    app:hasClearButton="true"-->
+<!--                    app:iconSignifier="@drawable/ic_place_black_24dp"-->
+<!--                    app:isResponsiveIconColor="true"-->
+<!--                    app:labelText="@string/location_prompt"-->
+<!--                    app:panelBackgroundColor="@color/location_background"-->
+<!--                    app:primaryColor="@android:color/black"-->
+<!--                    app:secondaryColor="@android:color/black"-->
+<!--                    app:textCounterColor="@android:color/black"-->
+<!--                    app:textHelperColor="@android:color/black">-->
+
+<!--                    <com.developer.mtextfield.ExtendedEditText-->
+<!--                        android:id="@+id/CityNameText"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:textColor="@android:color/black"-->
+<!--                        android:textColorHighlight="?android:attr/colorBackgroundCacheHint"-->
+<!--                        android:textColorHint="@android:color/black"-->
+<!--                        android:textColorLink="@android:color/black" />-->
+
+<!--                </com.developer.mtextfield.TextFieldBoxes>-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/locationConfirmButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="15dp"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:layout_marginRight="15dp"-->
+<!--                    android:layout_marginBottom="20dp"-->
+<!--                    android:onClick="onConfirmButtonClick"-->
+<!--                    android:text="@string/location_confirm" />-->
+
+<!--            </LinearLayout>-->
+<!--        </androidx.cardview.widget.CardView>-->
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
