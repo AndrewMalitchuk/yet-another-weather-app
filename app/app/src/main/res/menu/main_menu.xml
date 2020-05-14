@@ -6,6 +6,7 @@
     <item
         android:id="@+id/action_change_city"
         android:title="@string/change_city"
+        android:icon="@drawable/ic_place_white_24dp"
         app:showAsAction="ifRoom"/>
 
 </menu>

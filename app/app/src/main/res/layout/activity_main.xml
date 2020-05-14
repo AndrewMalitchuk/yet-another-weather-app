@@ -59,9 +59,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_margin="20dp"
-                                android:layout_weight="1"
-                                android:src="@drawable/sun"
-                                app:srcCompat="@drawable/sun" />
+                                android:layout_weight="1" />
 
 
                         </androidx.cardview.widget.CardView>
@@ -105,7 +103,7 @@
                                     android:layout_marginBottom="5dp"
                                     android:textAlignment="viewStart"
                                     android:textColor="@color/design_default_color_surface"
-                                    android:textSize="24sp" />
+                                    android:textSize="18sp" />
 
                                 <LinearLayout
                                     android:layout_width="wrap_content"
@@ -119,18 +117,18 @@
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_weight="1"
-                                        android:textAlignment="center"
+                                        android:textAlignment="viewStart"
                                         android:textColor="@color/common_google_signin_btn_text_dark_default"
-                                        android:textSize="12sp" />
+                                        android:textSize="10sp" />
 
                                     <TextView
                                         android:id="@+id/tempMin"
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_weight="1"
-                                        android:textAlignment="center"
+                                        android:textAlignment="viewStart"
                                         android:textColor="@color/common_google_signin_btn_text_dark_default"
-                                        android:textSize="12sp" />
+                                        android:textSize="10sp" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -143,7 +141,7 @@
                                 android:layout_marginBottom="5dp"
                                 android:textAlignment="viewStart"
                                 android:textColor="@color/design_default_color_surface"
-                                android:textSize="24sp" />
+                                android:textSize="18sp" />
 
                         </LinearLayout>
 

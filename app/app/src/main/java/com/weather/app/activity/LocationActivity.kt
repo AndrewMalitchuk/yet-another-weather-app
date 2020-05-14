@@ -26,11 +26,15 @@ import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.weather.app.R
+import com.weather.app.network.APIClient
+import com.weather.app.network.APIInterface
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_location.*
 import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
 class LocationActivity : AppCompatActivity() {
@@ -73,15 +77,15 @@ class LocationActivity : AppCompatActivity() {
                                 R.drawable.ic_place_black_24dp
                             )
                         )
-                        isForGps=true
-                    }else{
+                        isForGps = true
+                    } else {
                         floatingActionButton.setImageIcon(
                             Icon.createWithResource(
                                 applicationContext,
                                 R.drawable.ic_check_black_24dp
                             )
                         )
-                        isForGps=false
+                        isForGps = false
                     }
                 }
             }
@@ -96,12 +100,52 @@ class LocationActivity : AppCompatActivity() {
 
         })
 
-        floatingActionButton.setOnClickListener{
+        floatingActionButton.setOnClickListener {
 
-            if(isForGps){
-                Toast.makeText(applicationContext,"GPS",Toast.LENGTH_LONG).show()
-            }else{
-                Toast.makeText(applicationContext,"Custom",Toast.LENGTH_LONG).show()
+            if (isForGps) {
+                Toast.makeText(applicationContext, "GPS", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(applicationContext, "Custom", Toast.LENGTH_LONG).show()
+
+
+                //
+                var res = APIClient.client?.create(APIInterface::class.java)
+
+                res?.getSummary(locationText.text.toString(), APIClient.appid, "metric")
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribeOn(Schedulers.io())
+                    ?.doOnComplete {
+                        Snackbar.make(
+                            relativeLayout,
+                            resources.getText(R.string.success),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .show()
+                    }
+                    ?.doOnError {
+                        floatingActionButton.setImageIcon(
+                            Icon.createWithResource(
+                                applicationContext,
+                                R.drawable.ic_place_black_24dp
+                            )
+                        )
+                        isForGps = true
+                    }
+                    ?.subscribe({
+
+                    },
+                        {
+                            Snackbar.make(
+                                relativeLayout,
+                                resources.getText(R.string.fail),
+                                Snackbar.LENGTH_LONG
+                            )
+                                .show()
+                        }
+                    )
+
+                //
+
             }
         }
 
