@@ -8,10 +8,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dynamitechetan.flowinggradient.FlowingGradientClass
 import com.vivekkaushik.datepicker.OnDateSelectedListener
 import com.weather.app.R
+import com.weather.app.adapter.WeatherForDayAdapter
+import com.weather.app.entity.detail.WeatherDetail
 import com.weather.app.entity.detail.WeatherList
 import com.weather.app.entity.summary.WeatherSummary
 import com.weather.app.network.APIClient
@@ -22,6 +26,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,6 +35,12 @@ class MainActivity : AppCompatActivity() {
 
     val TAG = "MainActivity"
 
+    private val list: ArrayList<WeatherList> = ArrayList<WeatherList>()
+
+    private val adapter: WeatherForDayAdapter = WeatherForDayAdapter(list)
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -50,6 +61,9 @@ class MainActivity : AppCompatActivity() {
             setContent(city)
         }
         //
+
+
+        //
         val date: LocalDateTime
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             date = LocalDateTime.now()
@@ -63,11 +77,32 @@ class MainActivity : AppCompatActivity() {
             override fun onDateSelected(year: Int, month: Int, day: Int, dayOfWeek: Int) {
 
                 val date = Date()
-                date.year = year
+                date.year = year - 1900
                 date.month = month
                 date.date = day
-                Toast.makeText(this@MainActivity, "" + date.toString(), Toast.LENGTH_SHORT)
+
+
+                val formated = SimpleDateFormat("dd.MM.yyyy").format(date)
+                Toast.makeText(this@MainActivity, "" + formated, Toast.LENGTH_SHORT)
                     .show()
+
+                var res = APIClient.client?.create(APIInterface::class.java)
+                res?.getDetail(city, APIClient.appid, "metric")
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribeOn(Schedulers.io())
+                    ?.doOnComplete {
+                        chartWeatherCard.visibility = View.VISIBLE
+                        refresh.isRefreshing = false
+                        adapter.notifyDataSetChanged()
+
+                    }
+                    ?.subscribe {
+                        setWeatherForDate(it, formated)
+
+                    }
+                adapter.notifyDataSetChanged()
+
+
             }
 
             override fun onDisabledDateSelected(
@@ -82,7 +117,26 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun setContent(city:String) {
+    private fun setWeatherForDate(content: WeatherDetail, currentDate: String) {
+        recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = WeatherForDayAdapter(list)
+        }
+        list.clear()
+
+        for (weatherItem in content.list) {
+            val date =
+                SimpleDateFormat("dd.MM.yyyy").format(Date(weatherItem.dt.toLong() * 1000))
+//                            Log.d(TAG,date)
+            if (date.equals(currentDate)) {
+                list.add(weatherItem)
+            }
+        }
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setContent(city: String) {
         refresh.isRefreshing = true
         var res = APIClient.client?.create(APIInterface::class.java)
         res?.getSummary(city, APIClient.appid, "metric")
@@ -107,6 +161,7 @@ class MainActivity : AppCompatActivity() {
             ?.subscribe {
                 Log.d(TAG, it.toString())
                 setDetailContent(it.list)
+                setWeatherForDate(it, DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now()))
             }
     }
 
@@ -116,30 +171,30 @@ class MainActivity : AppCompatActivity() {
         weatherDescription.text = "(" + content.weather[0].description + ")"
         weatherTemp.setText("\uD83C\uDF21️ " + content.main.temp + " °С")
         weatherWind.setText("\uD83D\uDCA8 " + content.wind.speed + " m/s")
-        tempMax.text="⬆️ "+content.main.temp_max+" °С"
-        tempMin.text="⬇️ "+content.main.temp_min+" °С"
+        tempMax.text = "⬆️ " + content.main.temp_max + " °С"
+        tempMin.text = "⬇️ " + content.main.temp_min + " °С"
 
-        val weatherId=content.weather[0].id
-        if(weatherId>=200 && weatherId<=232){
-            Log.d(TAG,"Thunderstorm")
+        val weatherId = content.weather[0].id
+        if (weatherId >= 200 && weatherId <= 232) {
+            Log.d(TAG, "Thunderstorm")
             weatherIcon.setImageResource(R.drawable.thunderstorm)
-        }else if(weatherId>=300 && weatherId<=321){
-            Log.d(TAG,"Drizzle")
+        } else if (weatherId >= 300 && weatherId <= 321) {
+            Log.d(TAG, "Drizzle")
             weatherIcon.setImageResource(R.drawable.shower_rain)
-        }else if(weatherId>=500 && weatherId<=531){
-            Log.d(TAG,"Rain")
+        } else if (weatherId >= 500 && weatherId <= 531) {
+            Log.d(TAG, "Rain")
             weatherIcon.setImageResource(R.drawable.rain)
-        }else if(weatherId>=600 && weatherId<=622){
-            Log.d(TAG,"Snow")
+        } else if (weatherId >= 600 && weatherId <= 622) {
+            Log.d(TAG, "Snow")
             weatherIcon.setImageResource(R.drawable.snow)
-        }else if(weatherId>=701 && weatherId<=781){
-            Log.d(TAG,"Atmosphere ")
+        } else if (weatherId >= 701 && weatherId <= 781) {
+            Log.d(TAG, "Atmosphere ")
             weatherIcon.setImageResource(R.drawable.mist)
-        }else if(weatherId==800 ){
-            Log.d(TAG,"Clear")
+        } else if (weatherId == 800) {
+            Log.d(TAG, "Clear")
             weatherIcon.setImageResource(R.drawable.clear_sky)
-        }else if(weatherId>=801 && weatherId<=804){
-            Log.d(TAG,"Clouds")
+        } else if (weatherId >= 801 && weatherId <= 804) {
+            Log.d(TAG, "Clouds")
             weatherIcon.setImageResource(R.drawable.broken_clouds)
 
         }
@@ -147,6 +202,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDetailContent(content: List<WeatherList>) {
+
 
         val axisX = ArrayList<String>()
         val axisY = ArrayList<Float>()

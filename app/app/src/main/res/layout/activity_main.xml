@@ -225,16 +225,11 @@
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
-                <androidx.cardview.widget.CardView
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginBottom="10dp"
-                    app:cardBackgroundColor="@color/location_background"
-                    app:cardCornerRadius="5dp"
-                    app:cardElevation="5dp">
-                </androidx.cardview.widget.CardView>
+                    android:layout_height="300dp" />
+
             </LinearLayout>
             </androidx.cardview.widget.CardView>
 
