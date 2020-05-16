@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+
+
         <androidx.cardview.widget.CardView
             android:layout_width="325dp"
             android:layout_height="wrap_content"
@@ -27,16 +29,39 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/floatingActionButton"
-                    android:layout_width="match_parent"
+<!--                <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--                    android:id="@+id/floatingActionButton"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentTop="true"-->
+<!--                    android:layout_alignParentRight="true"-->
+<!--                    android:layout_marginTop="175dp"-->
+<!--                    android:layout_marginRight="20dp"-->
+<!--                    android:clickable="true"-->
+<!--                    android:src="@drawable/ic_place_black_24dp" />-->
+
+                <com.github.jorgecastilloprz.FABProgressCircle
+                    android:id="@+id/fabProgressCircle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginTop="175dp"
                     android:layout_marginRight="20dp"
-                    android:clickable="true"
-                    android:src="@drawable/ic_place_black_24dp" />
+                    android:elevation="5dp">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/floatingActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dp"
+                        android:src="@drawable/ic_place_black_24dp"
+                        app:borderWidth="0dp"
+                        app:elevation="10dp"
+                        app:rippleColor="@color/card_background" />
+
+                </com.github.jorgecastilloprz.FABProgressCircle>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -52,12 +77,12 @@
                         app:cardElevation="5dp">
 
 
-                        <ImageView
-                            android:id="@+id/imageView"
+                        <com.flaviofaria.kenburnsview.KenBurnsView
+                            android:id="@+id/image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:scaleType="centerCrop"
-                            app:srcCompat="@drawable/map" />
+                            android:src="@drawable/map" />
+
                     </androidx.cardview.widget.CardView>
 
                     <TextView
@@ -78,106 +103,11 @@
                         android:hint="@string/location_prompt"
                         android:inputType="textPersonName" />
 
-                    <!--                    <com.developer.mtextfield.TextFieldBoxes-->
-                    <!--                        android:id="@+id/cityNameBox"-->
-                    <!--                        android:layout_width="match_parent"-->
-                    <!--                        android:layout_height="wrap_content"-->
-                    <!--                        android:layout_marginLeft="15dp"-->
-                    <!--                        android:layout_marginTop="15dp"-->
-                    <!--                        android:layout_marginRight="20dp"-->
-                    <!--                        android:layout_marginBottom="10dp"-->
-                    <!--                        app:hasClearButton="true"-->
-                    <!--                        app:isResponsiveIconColor="true"-->
-                    <!--                        app:labelText="@string/location_prompt"-->
-                    <!--                        app:panelBackgroundColor="@color/location_background"-->
-                    <!--                        app:primaryColor="@android:color/black"-->
-                    <!--                        app:secondaryColor="@android:color/black"-->
-                    <!--                        app:textCounterColor="@android:color/black"-->
-                    <!--                        app:textHelperColor="@android:color/black">-->
-
-                    <!--                        <com.developer.mtextfield.ExtendedEditText-->
-                    <!--                            android:id="@+id/CityNameText"-->
-                    <!--                            android:layout_width="wrap_content"-->
-                    <!--                            android:layout_height="wrap_content"-->
-                    <!--                            android:textColor="@android:color/black"-->
-                    <!--                            android:textColorHighlight="?android:attr/colorBackgroundCacheHint"-->
-                    <!--                            android:textColorHint="@android:color/black"-->
-                    <!--                            android:textColorLink="@android:color/black" />-->
-
-                    <!--                    </com.developer.mtextfield.TextFieldBoxes>-->
-
 
                 </LinearLayout>
             </RelativeLayout>
 
         </androidx.cardview.widget.CardView>
 
-
-<!--        <androidx.cardview.widget.CardView-->
-<!--            android:layout_width="325dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            app:cardBackgroundColor="@color/cardview_light_background"-->
-<!--            app:cardCornerRadius="5dp"-->
-<!--            app:cardElevation="5dp">-->
-
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:orientation="vertical">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginLeft="15dp"-->
-<!--                    android:layout_marginTop="20dp"-->
-<!--                    android:layout_marginRight="15dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    android:text="@string/location_title"-->
-<!--                    android:textColor="@android:color/black"-->
-<!--                    android:textSize="24sp" />-->
-
-<!--                <com.developer.mtextfield.TextFieldBoxes-->
-<!--                    android:id="@+id/cityNameBox"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginLeft="15dp"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:layout_marginRight="20dp"-->
-<!--                    android:layout_marginBottom="10dp"-->
-<!--                    app:hasClearButton="true"-->
-<!--                    app:iconSignifier="@drawable/ic_place_black_24dp"-->
-<!--                    app:isResponsiveIconColor="true"-->
-<!--                    app:labelText="@string/location_prompt"-->
-<!--                    app:panelBackgroundColor="@color/location_background"-->
-<!--                    app:primaryColor="@android:color/black"-->
-<!--                    app:secondaryColor="@android:color/black"-->
-<!--                    app:textCounterColor="@android:color/black"-->
-<!--                    app:textHelperColor="@android:color/black">-->
-
-<!--                    <com.developer.mtextfield.ExtendedEditText-->
-<!--                        android:id="@+id/CityNameText"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:textColor="@android:color/black"-->
-<!--                        android:textColorHighlight="?android:attr/colorBackgroundCacheHint"-->
-<!--                        android:textColorHint="@android:color/black"-->
-<!--                        android:textColorLink="@android:color/black" />-->
-
-<!--                </com.developer.mtextfield.TextFieldBoxes>-->
-
-<!--                <Button-->
-<!--                    android:id="@+id/locationConfirmButton"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginLeft="15dp"-->
-<!--                    android:layout_marginTop="10dp"-->
-<!--                    android:layout_marginRight="15dp"-->
-<!--                    android:layout_marginBottom="20dp"-->
-<!--                    android:onClick="onConfirmButtonClick"-->
-<!--                    android:text="@string/location_confirm" />-->
-
-<!--            </LinearLayout>-->
-<!--        </androidx.cardview.widget.CardView>-->
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

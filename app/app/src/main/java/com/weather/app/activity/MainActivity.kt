@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dynamitechetan.flowinggradient.FlowingGradientClass
+import com.google.android.material.snackbar.Snackbar
 import com.vivekkaushik.datepicker.OnDateSelectedListener
 import com.weather.app.R
 import com.weather.app.adapter.WeatherForDayAdapter
@@ -23,6 +24,7 @@ import com.weather.app.network.APIInterface
 import im.dacer.androidcharts.LineView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_location.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             .start()
 
         //
+        refresh.isRefreshing = true
         val city = "Odessa"
         setContent(city)
         //
@@ -96,10 +99,17 @@ class MainActivity : AppCompatActivity() {
                         adapter.notifyDataSetChanged()
 
                     }
-                    ?.subscribe {
+                    ?.subscribe({
                         setWeatherForDate(it, formated)
 
-                    }
+                    }, {
+                        Snackbar.make(
+                            refresh,
+                            resources.getText(R.string.network_error),
+                            Snackbar.LENGTH_LONG
+                        )
+                            .show()
+                    })
                 adapter.notifyDataSetChanged()
 
 
@@ -146,10 +156,17 @@ class MainActivity : AppCompatActivity() {
                 chartWeatherCard.visibility = View.VISIBLE
 
             }
-            ?.subscribe {
+            ?.subscribe({
                 Log.d(TAG, it.toString())
                 setSummaryContent(it)
-            }
+            }, {
+                Snackbar.make(
+                    refresh,
+                    resources.getText(R.string.network_error),
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            })
 
         res?.getDetail(city, APIClient.appid, "metric")
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -158,11 +175,21 @@ class MainActivity : AppCompatActivity() {
                 chartWeatherCard.visibility = View.VISIBLE
                 refresh.isRefreshing = false
             }
-            ?.subscribe {
+            ?.subscribe({
                 Log.d(TAG, it.toString())
                 setDetailContent(it.list)
-                setWeatherForDate(it, DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now()))
-            }
+                setWeatherForDate(
+                    it,
+                    DateTimeFormatter.ofPattern("dd.MM.yyyy").format(LocalDateTime.now())
+                )
+            }, {
+                Snackbar.make(
+                    refresh,
+                    resources.getText(R.string.network_error),
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            })
     }
 
     private fun setSummaryContent(content: WeatherSummary) {
@@ -199,6 +226,13 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        refresh.isRefreshing = false
+        mainWeatherCard.visibility = View.VISIBLE
+        calendarWeatherCard.visibility = View.VISIBLE
+        detailWeatherCard.visibility = View.VISIBLE
+        chartWeatherCard.visibility = View.VISIBLE
+        info.visibility=View.VISIBLE
+
     }
 
     private fun setDetailContent(content: List<WeatherList>) {
@@ -220,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         lineView.setBottomTextList(axisX)
         lineView.setColorArray(
             intArrayOf(
-                R.color.cardview_dark_background
+                R.color.black
             )
         )
         lineView.setDrawDotLine(true)
@@ -237,6 +271,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_change_city -> {
                 startActivity(Intent(applicationContext, LocationActivity::class.java))
             }
+
         }
 
         return super.onOptionsItemSelected(item)

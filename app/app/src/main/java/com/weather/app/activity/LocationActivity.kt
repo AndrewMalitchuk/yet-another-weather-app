@@ -51,6 +51,10 @@ class LocationActivity : AppCompatActivity() {
 
     private var isForGps = true
 
+
+    private var lat:Double=-1.0
+    private var lon:Double=-1.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_location)
@@ -64,6 +68,7 @@ class LocationActivity : AppCompatActivity() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         getLastLocation()
+
 
         // Change FAB icon - if text inputted - just confirm, else - use GPS
         locationText.addTextChangedListener(object : TextWatcher {
@@ -104,8 +109,16 @@ class LocationActivity : AppCompatActivity() {
 
             if (isForGps) {
                 Toast.makeText(applicationContext, "GPS", Toast.LENGTH_LONG).show()
+                fabProgressCircle.show()
+                Snackbar.make(
+                    relativeLayout,
+                    resources.getText(R.string.searching),
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
             } else {
                 Toast.makeText(applicationContext, "Custom", Toast.LENGTH_LONG).show()
+                fabProgressCircle.hide()
 
 
                 //
@@ -132,7 +145,8 @@ class LocationActivity : AppCompatActivity() {
                         isForGps = true
                     }
                     ?.subscribe({
-
+                        // TODO: launch
+                        startMainActivity(city=locationText.text.toString())
                     },
                         {
                             Snackbar.make(
@@ -152,10 +166,7 @@ class LocationActivity : AppCompatActivity() {
 
     }
 
-    fun onConfirmButtonClick(view: View) {
-        Snackbar.make(relativeLayout, resources.getText(R.string.success), Snackbar.LENGTH_LONG)
-            .show()
-
+    fun startMainActivity(city:String="",lat:Double=-1.0,lon:Double=-1.0){
         Observable
             .timer(delay, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
@@ -181,6 +192,7 @@ class LocationActivity : AppCompatActivity() {
                             TAG,
                             location.latitude.toString() + " " + location.longitude.toString()
                         )
+
 
                     }
                 }
@@ -244,9 +256,13 @@ class LocationActivity : AppCompatActivity() {
 
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
-            var mLastLocation: Location = locationResult.lastLocation
+            var location: Location = locationResult.lastLocation
 
-            Log.d(TAG, mLastLocation.latitude.toString() + " " + mLastLocation.longitude.toString())
+            Log.d(TAG, location.latitude.toString() + " " + location.longitude.toString())
+
+            fabProgressCircle.hide()
+            startMainActivity(lat=location.latitude,lon =location.longitude )
+
 //            findViewById<TextView>(R.id.latTextView).text = mLastLocation.latitude.toString()
 //            findViewById<TextView>(R.id.lonTextView).text = mLastLocation.longitude.toString()
         }

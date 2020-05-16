@@ -9,4 +9,8 @@
     <string name="date">🗓️ Choose date</string>
     <string name="detail">📋 Details</string>
     <string name="change_city">Change city</string>
+    <string name="network_error">Fail! Check your connection</string>
+    <string name="help">Help</string>
+    <string name="searching">Searching...</string>
+    <string name="info">github.com/AndrewMalitchuk</string>
 </resources>
