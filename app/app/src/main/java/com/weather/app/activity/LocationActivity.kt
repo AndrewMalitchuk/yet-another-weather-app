@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.Icon
 import android.location.Location
@@ -39,7 +40,7 @@ import java.util.concurrent.TimeUnit
 
 class LocationActivity : AppCompatActivity() {
 
-    private val TAG = "LocationActivity"
+    public val TAG = "LocationActivity"
 
     private val delay: Long = 2
 
@@ -50,6 +51,12 @@ class LocationActivity : AppCompatActivity() {
     lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     private var isForGps = true
+
+    val APP_PREFERENCES = "weather"
+    val APP_PREFERENCES_CITY = "city"
+    val APP_PREFERENCES_LAT = "lat"
+    val APP_PREFERENCES_LON = "lon"
+    lateinit var pref: SharedPreferences
 
 
     private var lat:Double=-1.0
@@ -69,6 +76,7 @@ class LocationActivity : AppCompatActivity() {
 
         getLastLocation()
 
+        pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
 
         // Change FAB icon - if text inputted - just confirm, else - use GPS
         locationText.addTextChangedListener(object : TextWatcher {
@@ -108,7 +116,7 @@ class LocationActivity : AppCompatActivity() {
         floatingActionButton.setOnClickListener {
 
             if (isForGps) {
-                Toast.makeText(applicationContext, "GPS", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "GPS", Toast.LENGTH_LONG).show()
                 fabProgressCircle.show()
                 Snackbar.make(
                     relativeLayout,
@@ -117,7 +125,7 @@ class LocationActivity : AppCompatActivity() {
                 )
                     .show()
             } else {
-                Toast.makeText(applicationContext, "Custom", Toast.LENGTH_LONG).show()
+//                Toast.makeText(applicationContext, "Custom", Toast.LENGTH_LONG).show()
                 fabProgressCircle.hide()
 
 
@@ -167,6 +175,18 @@ class LocationActivity : AppCompatActivity() {
     }
 
     fun startMainActivity(city:String="",lat:Double=-1.0,lon:Double=-1.0){
+
+        if(!city.equals("")){
+            val editor = pref.edit()
+            editor.putString(APP_PREFERENCES_CITY, city)
+            editor.apply()
+        }else if(lat!=-1.0 && lon !=-1.0){
+            val editor = pref.edit()
+            editor.putFloat(APP_PREFERENCES_LAT, lat.toFloat())
+            editor.putFloat(APP_PREFERENCES_LON, lon.toFloat())
+            editor.apply()
+        }
+
         Observable
             .timer(delay, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())

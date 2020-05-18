@@ -1,6 +1,8 @@
 package com.weather.app.activity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -37,10 +39,19 @@ class MainActivity : AppCompatActivity() {
 
     val TAG = "MainActivity"
 
+    val APP_PREFERENCES = "weather"
+    val APP_PREFERENCES_CITY = "city"
+    val APP_PREFERENCES_LAT = "lat"
+    val APP_PREFERENCES_LON = "lon"
+    lateinit var pref: SharedPreferences
+
     private val list: ArrayList<WeatherList> = ArrayList<WeatherList>()
 
     private val adapter: WeatherForDayAdapter = WeatherForDayAdapter(list)
 
+    lateinit var city: String
+
+    var count=0
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,8 +67,27 @@ class MainActivity : AppCompatActivity() {
             .start()
 
         //
+
         refresh.isRefreshing = true
-        val city = "Odessa"
+
+        pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+
+        if (pref.contains(APP_PREFERENCES_CITY)) {
+            // Получаем число из настроек
+            city = pref.getString(APP_PREFERENCES_CITY, null).toString();
+            // Выводим на экран данные из настроек
+            Log.d(TAG, city)
+        } else if (pref.contains(APP_PREFERENCES_LAT) && pref.contains(APP_PREFERENCES_LON)) {
+            // Получаем число из настроек
+            val lat = pref.getFloat(APP_PREFERENCES_LAT, -1.0.toFloat());
+            val lon = pref.getFloat(APP_PREFERENCES_LON, -1.0.toFloat());
+            // Выводим на экран данные из настроек
+            Log.d(TAG, "" + lat + " " + lon)
+        }
+
+
+        //
+
         setContent(city)
         //
         refresh.setOnRefreshListener {
@@ -124,6 +154,16 @@ class MainActivity : AppCompatActivity() {
             ) {
             }
         })
+
+        weatherIcon.setOnClickListener {
+            count++
+            if(count==10){
+                Toast.makeText(this@MainActivity,R.string.easter,Toast.LENGTH_LONG).show()
+                count=0
+            }
+
+
+        }
 
     }
 
@@ -231,7 +271,7 @@ class MainActivity : AppCompatActivity() {
         calendarWeatherCard.visibility = View.VISIBLE
         detailWeatherCard.visibility = View.VISIBLE
         chartWeatherCard.visibility = View.VISIBLE
-        info.visibility=View.VISIBLE
+        info.visibility = View.VISIBLE
 
     }
 

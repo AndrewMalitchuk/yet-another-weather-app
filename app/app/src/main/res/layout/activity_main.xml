@@ -171,6 +171,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="15dp"
                             android:text="@string/date"
+                            android:textColor="@color/location_background"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -224,6 +225,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="15dp"
                             android:text="@string/detail"
+                            android:textColor="@color/location_background"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -256,6 +258,7 @@
                             android:layout_height="wrap_content"
                             android:layout_margin="15dp"
                             android:text="@string/graph"
+                            android:textColor="@color/location_background"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
