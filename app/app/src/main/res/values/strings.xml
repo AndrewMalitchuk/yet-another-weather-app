@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Yet Another Weather App</string>
+    <string name="location_title">Where are you from?</string>
+    <string name="location_prompt">I\'m from...</string>
+    <string name="location_confirm">Let\'s start</string>
+    <string name="success">Success!</string>
+    <string name="fail">Fail! Check your city or use GPS</string>
+    <string name="graph">🌡️ Graph (°С)</string>
+    <string name="date">🗓️ Choose date</string>
+    <string name="detail">📋 Details</string>
+    <string name="change_city">Change city</string>
+    <string name="network_error">Fail! Check your connection</string>
+    <string name="help">Help</string>
+    <string name="searching">Searching...</string>
+    <string name="info">github.com/AndrewMalitchuk</string>
+    <string name="easter">Why?</string>
+    <string name="no_data">There is no information about weather for this date</string>
+</resources>
