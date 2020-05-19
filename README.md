@@ -4,7 +4,7 @@ Yet another weather forecast app for Android.
 
 ## Overview
 
-Simple weather app for Andoid written on Kotlin for [OpenWeatherMap.org](https://openweathermap.org/api).
+Simple weather app for Android written on Kotlin for [OpenWeatherMap.org](https://openweathermap.org/api).
 
 You can see simple demo below or [download video](https://github.com/AndrewMalitchuk/yet-another-weather-app/blob/dev/README/1.mp4).
 
