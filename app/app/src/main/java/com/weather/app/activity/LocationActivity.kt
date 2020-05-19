@@ -15,52 +15,38 @@ import android.os.Looper
 import android.provider.Settings
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.View
-import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.widget.doOnTextChanged
 import com.dynamitechetan.flowinggradient.FlowingGradientClass
 import com.google.android.gms.location.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.weather.app.R
 import com.weather.app.network.APIClient
 import com.weather.app.network.APIInterface
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.exceptions.OnErrorNotImplementedException
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_location.*
-import kotlinx.android.synthetic.main.activity_main.*
-import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
 class LocationActivity : AppCompatActivity() {
 
-    public val TAG = "LocationActivity"
+    private val TAG = "LocationActivity"
 
     private val delay: Long = 2
 
     private val PERMISSION_ID = 42
 
-    private lateinit var locationManager: LocationManager
-
-    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private var isForGps = true
 
-    val APP_PREFERENCES = "weather"
-    val APP_PREFERENCES_CITY = "city"
-    val APP_PREFERENCES_LAT = "lat"
-    val APP_PREFERENCES_LON = "lon"
+    // Stuff for SharedPreferences
+    private val APP_PREFERENCES = "weather"
+    private val APP_PREFERENCES_CITY = "city"
+    private val APP_PREFERENCES_LAT = "lat"
+    private val APP_PREFERENCES_LON = "lon"
     lateinit var pref: SharedPreferences
-
-
-    private var lat:Double=-1.0
-    private var lon:Double=-1.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,19 +57,16 @@ class LocationActivity : AppCompatActivity() {
             .onRelativeLayout(relativeLayout)
             .setTransitionDuration(4000)
             .start()
-        //
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
+        // Location via GPS
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         getLastLocation()
-
+        // Init SharedPreferences
         pref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
-
         // Change FAB icon - if text inputted - just confirm, else - use GPS
         locationText.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (s.toString().trim() == "") {
-
                         floatingActionButton.setImageIcon(
                             Icon.createWithResource(
                                 applicationContext,
@@ -110,13 +93,9 @@ class LocationActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
             }
-
         })
-
         floatingActionButton.setOnClickListener {
-
             if (isForGps) {
-//                Toast.makeText(applicationContext, "GPS", Toast.LENGTH_LONG).show()
                 fabProgressCircle.show()
                 Snackbar.make(
                     relativeLayout,
@@ -125,13 +104,8 @@ class LocationActivity : AppCompatActivity() {
                 )
                     .show()
             } else {
-//                Toast.makeText(applicationContext, "Custom", Toast.LENGTH_LONG).show()
                 fabProgressCircle.hide()
-
-
-                //
                 var res = APIClient.client?.create(APIInterface::class.java)
-
                 res?.getSummary(locationText.text.toString(), APIClient.appid, "metric")
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribeOn(Schedulers.io())
@@ -153,8 +127,7 @@ class LocationActivity : AppCompatActivity() {
                         isForGps = true
                     }
                     ?.subscribe({
-                        // TODO: launch
-                        startMainActivity(city=locationText.text.toString())
+                        startMainActivity(city = locationText.text.toString())
                     },
                         {
                             Snackbar.make(
@@ -165,28 +138,21 @@ class LocationActivity : AppCompatActivity() {
                                 .show()
                         }
                     )
-
-                //
-
             }
         }
-
-
     }
 
-    fun startMainActivity(city:String="",lat:Double=-1.0,lon:Double=-1.0){
-
-        if(!city.equals("")){
+    fun startMainActivity(city: String = "", lat: Double = -1.0, lon: Double = -1.0) {
+        if (!city.equals("")) {
             val editor = pref.edit()
             editor.putString(APP_PREFERENCES_CITY, city)
             editor.apply()
-        }else if(lat!=-1.0 && lon !=-1.0){
+        } else if (lat != -1.0 && lon != -1.0) {
             val editor = pref.edit()
             editor.putFloat(APP_PREFERENCES_LAT, lat.toFloat())
             editor.putFloat(APP_PREFERENCES_LON, lon.toFloat())
             editor.apply()
         }
-
         Observable
             .timer(delay, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
@@ -200,24 +166,13 @@ class LocationActivity : AppCompatActivity() {
     private fun getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
-                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+                fusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
                     var location: Location? = task.result
                     if (location == null) {
                         requestNewLocationData()
-                    } else {
-//                        findViewById<TextView>(R.id.latTextView).text = location.latitude.toString()
-//                        findViewById<TextView>(R.id.lonTextView).text = location.longitude.toString()
-                        Log.d(
-                            TAG,
-                            location.latitude.toString() + " " + location.longitude.toString()
-                        )
-
-
                     }
                 }
             } else {
-                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
             }
@@ -225,7 +180,6 @@ class LocationActivity : AppCompatActivity() {
             requestPermissions()
         }
     }
-
 
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
@@ -241,7 +195,6 @@ class LocationActivity : AppCompatActivity() {
         }
         return false
     }
-
 
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
@@ -277,29 +230,21 @@ class LocationActivity : AppCompatActivity() {
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             var location: Location = locationResult.lastLocation
-
-            Log.d(TAG, location.latitude.toString() + " " + location.longitude.toString())
-
             fabProgressCircle.hide()
-            startMainActivity(lat=location.latitude,lon =location.longitude )
-
-//            findViewById<TextView>(R.id.latTextView).text = mLastLocation.latitude.toString()
-//            findViewById<TextView>(R.id.lonTextView).text = mLastLocation.longitude.toString()
+            startMainActivity(lat = location.latitude, lon = location.longitude)
         }
     }
 
-
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
-        var mLocationRequest = LocationRequest()
-        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        mLocationRequest.interval = 0
-        mLocationRequest.fastestInterval = 0
-        mLocationRequest.numUpdates = 1
-
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        mFusedLocationClient!!.requestLocationUpdates(
-            mLocationRequest, mLocationCallback,
+        var locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastestInterval = 0
+        locationRequest.numUpdates = 1
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient!!.requestLocationUpdates(
+            locationRequest, mLocationCallback,
             Looper.myLooper()
         )
     }

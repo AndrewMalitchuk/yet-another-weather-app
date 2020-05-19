@@ -1,17 +1,13 @@
 package com.weather.app.adapter
 
-import com.weather.app.R
-import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.weather.app.R
 import com.weather.app.entity.detail.WeatherList
 import java.text.SimpleDateFormat
 import java.util.*
-
 
 class WeatherForDayAdapter(private val list: List<WeatherList>)
     : RecyclerView.Adapter<WeatherForDayAdapter.ViewHolder>() {
@@ -25,7 +21,6 @@ class WeatherForDayAdapter(private val list: List<WeatherList>)
 
     override fun onBindViewHolder(holder: WeatherForDayAdapter.ViewHolder, position: Int) {
         val weatherList:WeatherList=list[position]
-        Log.d(TAG,list[position].toString())
         holder.bind(weatherList)
     }
 
@@ -41,7 +36,6 @@ class WeatherForDayAdapter(private val list: List<WeatherList>)
         private var main: TextView? = null
         private var description: TextView? = null
 
-
         init {
             time = itemView.findViewById(R.id.time)
             temperature = itemView.findViewById(R.id.temperature)
@@ -55,6 +49,6 @@ class WeatherForDayAdapter(private val list: List<WeatherList>)
             main?.text=weatherList.weather[0].main
             description?.text="("+weatherList.weather[0].description+")"
         }
-
     }
+
 }

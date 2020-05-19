@@ -22,4 +22,21 @@ interface APIInterface {
         @Query("units") units: String
     ): Observable<WeatherSummary>
 
+
+    @GET(APIClient.detail)
+    fun getDetail(
+        @Query("lat") lat: Float,
+        @Query("lon") lon: Float,
+        @Query("appid") appid: String,
+        @Query("units") units: String
+    ): Observable<WeatherDetail>
+
+    @GET(APIClient.summary)
+    fun getSummary(
+        @Query("lat") lat: Float,
+        @Query("lon") lon: Float,
+        @Query("appid") appid: String,
+        @Query("units") units: String
+    ): Observable<WeatherSummary>
+
 }
